@@ -3,7 +3,7 @@
 网页版XShell <br>
 
 >访问路径: http://localhost/shell/index
-
+![img.png](img.png)
 <table>
     <thead>
         <th>支持的快捷键</th>
@@ -65,7 +65,7 @@
         <td>Ctrl+Shift+B</td>
         <td>滚动缓冲区清除</td>
     </tr>
-<table>
+</table>
 
 ##二、xterm.js
 
