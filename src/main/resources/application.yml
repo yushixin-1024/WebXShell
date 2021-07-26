@@ -1,0 +1,37 @@
+# 开启Debug
+debug: true
+
+server:
+  # 端口号
+  port: 80
+  servlet:
+    # 访问路径
+    context-path: /shell
+  http2:
+    enabled: true
+
+# 项目名
+spring:
+  application:
+    name: WebXShell
+  mvc:
+    static-path-pattern: /static/**
+  thymeleaf:
+    # 页面不加载缓存,修改即时生效
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+
+# WebSocket配置信息
+shell:
+  websocket:
+    # 连接端点
+    endpoint: /ws
+    # 允许跨域路径
+    allowedOrigins: "*"
+    # 一对一前缀
+    user: /user
+    # 广播前缀
+    topic: /topic
+    # 向服务端发送消息前缀
+    app: /app

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>WebXShell</title>
+    <link rel="shortcut icon" th:href="@{/static/ico/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/static/xterm/xterm.css}" media="all"/>
+    <script th:src="@{/static/js/jquery.js}"></script>
+    <script th:src="@{/static/xterm/xterm.js}"></script>
+    <script th:src="@{/static/js/sockjs.js}"></script>
+    <script th:src="@{/static/js/stomp.js}"></script>
+    <script th:src="@{/static/js/shell.js}"></script>
+</head>
+<body>
+    <!-- 终端界面 -->
+    <div id="terminal"></div>
+</body>
+
+<script>
+    // 命令行窗口
+    openShell();
+</script>
+</html>
