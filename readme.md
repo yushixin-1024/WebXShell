@@ -2,8 +2,8 @@
 
 网页版XShell <br>
 
->访问路径: http://localhost/shell/index
-![img.png](img.png)
+> 访问路径: http://localhost/shell/index
+> ![img.png](img.png)
 <table>
     <thead>
         <th>支持的快捷键</th>
