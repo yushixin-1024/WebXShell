@@ -10,13 +10,13 @@ public class BaseData implements Serializable {
     private static final long serialVersionUID = -8987042483505477551L;
 
     // 客户端ID
-    protected Integer channelId;
+    protected String clientId;
 
-    public Integer getChannelId() {
-        return channelId;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setChannelId(Integer channelId) {
-        this.channelId = channelId;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

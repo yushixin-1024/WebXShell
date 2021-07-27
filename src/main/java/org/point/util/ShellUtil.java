@@ -49,7 +49,7 @@ public class ShellUtil {
     public static byte[] getDescBytes(byte[] src, CmdType type, int length) {
         byte[] bytes;
         int available = src.length;
-        int offset = getOffset(src, type, length);
+        int offset = getOffset(type, length);
         if ( offset == 0 ) {
             bytes = src;
         } else {
@@ -69,11 +69,8 @@ public class ShellUtil {
      * @param length 命令行字节长度
      * @return 偏移量
      */
-    public static int getOffset(byte[] src, CmdType type, int length) {
+    public static int getOffset(CmdType type, int length) {
         if ( CmdType.Enter.equals(type) ) {
-            /*if ( src[0] == 13 && src[1] == 10 ) {
-                return 0;
-            }*/
             // 因为ssh返回数据时,会将原命令返回,导致页面展示会出现命令重复显示的问题,-1是去掉\r的1个字节长度,(length - 1)是字节数组的偏移量
             return length - 1;
         }

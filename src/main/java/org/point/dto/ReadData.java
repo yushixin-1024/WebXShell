@@ -20,14 +20,14 @@ public class ReadData extends BaseData {
 
     /**
      * 构建对象实例
-     * @param channelId 客户端通道ID
+     * @param clientId 客户端ID
      * @param sleep 睡眠间隔时长
      * @param offset 偏移量
      * @return ReadData
      */
-    public static ReadData build(Integer channelId, long sleep, CmdType type, int offset) {
+    public static ReadData build(String clientId, long sleep, CmdType type, int offset) {
         ReadData data = new ReadData();
-        data.setChannelId(channelId);
+        data.setClientId(clientId);
         data.setSleep(sleep);
         data.setType(type);
         data.setOffset(offset);

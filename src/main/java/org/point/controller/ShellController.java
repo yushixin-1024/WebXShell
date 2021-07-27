@@ -58,7 +58,7 @@ public class ShellController implements ApplicationContextAware {
      * @param clientId 读取事件数据
      */
     @MessageMapping("/read")
-    public void readData(Integer clientId) {
+    public void readData(String clientId) {
         applicationContext.publishEvent( new ReadEvent(ReadData.build(clientId, 10L, CmdType.Enter, 0)) );
     }
 

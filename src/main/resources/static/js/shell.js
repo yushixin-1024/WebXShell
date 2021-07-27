@@ -16,8 +16,6 @@ const Delete = ' \b';
 const Backspace = '\b \b';
 // Enter键指令
 const Enter = '\r';
-// 客户端分配ID
-let channelId = 0;
 
 /**
  * 定义客户端
@@ -40,6 +38,7 @@ ShellClient.prototype.getUrl = function () {
  * 建立STOMP客户端连接
  */
 ShellClient.prototype.connect = function (terminal) {
+    error(terminal.clientId)
     let url = this.getUrl();
     let sockJS = new SockJS(url);
     // 配置STOMP客户端
@@ -47,25 +46,23 @@ ShellClient.prototype.connect = function (terminal) {
     this.connection.connect({}, function (frame) {
         // 连接成功
         if ( frame.command === 'CONNECTED' ) {
-            channelId++;
-            terminal.channelId = channelId;
             // 订阅来自SSH服务器的信息
             terminal.client.subscribeSSH(terminal);
             // ssh会话信息
-            /*let info = {
+            let info = {
                 "host": "10.32.3.29",
                 "port": "22",
                 "username": "weblogic",
                 "password": "weblogic123",
-                "clientId": clientId
-            };*/
-            let info = {
+                "clientId": terminal.clientId
+            };
+            /*let info = {
                 "host": "192.168.1.3",
                 "port": "22",
                 "username": "root",
                 "password": "123",
-                "channelId": channelId
-            };
+                "clientId": terminal.clientId
+            };*/
             // 发送连接数据
             terminal.client.sendConnect(info);
         } else {
@@ -91,7 +88,7 @@ ShellClient.prototype.sendConnect = function (info) {
  */
 ShellClient.prototype.sendCmd = function (terminal, type, cmd) {
     let data = {
-        'channelId': terminal.channelId,
+        'clientId': terminal.clientId,
         'type': type,
         'cmd': cmd
     };
@@ -103,7 +100,7 @@ ShellClient.prototype.sendCmd = function (terminal, type, cmd) {
  * 订阅来自SSH服务器的消息
  */
 ShellClient.prototype.subscribeSSH = function (terminal) {
-    let destination = user + '/' + terminal.channelId + '/read';
+    let destination = user + '/' + terminal.clientId + '/read';
     this.connection.subscribe(destination, function (frame) {
         let payload = JSON.parse(frame.body);
         let message = payload.message;
@@ -402,6 +399,9 @@ function openShell () {
     terminal.startIndex = 0;
     // Tab指令次数
     terminal.tabCount = 0;
+    // 客户端ID
+    terminal.clientId = uuid();
+    error(terminal.clientId)
     // 终端获取焦点
     terminal.focus();
     // 支持输入法
@@ -503,6 +503,16 @@ function openShell () {
     terminal.client.connect(terminal);
     // 键盘输入
     keyboardInput(terminal);
+}
+
+/**
+ * 生成UUID
+ */
+function uuid() {
+    function gen() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+    return (gen() + '-' + gen() + '-' + gen() + '-' + gen() + '-' + gen());
 }
 
 /**

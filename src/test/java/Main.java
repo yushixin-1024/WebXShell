@@ -6,7 +6,7 @@ import java.net.Socket;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Socket socket = new Socket("10.32.3.29", 22);
+        Socket socket = new Socket("192.168.1.3", 22);
         OutputStream os = socket.getOutputStream();
         os.write("pwd".getBytes());
         os.flush();

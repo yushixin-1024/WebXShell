@@ -1,9 +1,17 @@
-##一、WebXShell
+##WebXShell V1.0
 
 网页版XShell <br>
 
+````
+1.支持大部分指令
+2.支持多客户端访问
+3.页面简陋,测试Demo
+````
+
 > 访问路径: http://localhost/shell/index
 > ![img.png](img.png)
+> ![img_1.png](img_1.png)
+
 <table>
     <thead>
         <th>支持的快捷键</th>
@@ -67,9 +75,8 @@
     </tr>
 </table>
 
-##二、xterm.js
-
-前端页面使用xterm.js
+**前端页面使用xterm.js + sockjs.js + stomp.js <br>
+后端使用Springboot + WebSocket + Jsch**
 
 >1.GitHub地址: https://github.com/xtermjs/xterm.js
 

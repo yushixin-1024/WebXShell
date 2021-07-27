@@ -35,7 +35,7 @@ public class ShellListener implements Serializable {
     private static final long serialVersionUID = 692647322397928182L;
 
     // 元信息集合
-    private static final Map<Integer, MetaData> map = new ConcurrentHashMap<>(64);
+    private static final Map<String, MetaData> map = new ConcurrentHashMap<>(64);
     // 向用户发送消息模板类
     @Autowired
     private SimpMessagingTemplate template;
@@ -49,13 +49,13 @@ public class ShellListener implements Serializable {
     public void connect(ConnectEvent event) {
         ConnectData connectData = event.getSource();
         ChannelShell channel = ShellUtil.getChannel(connectData);
-        Integer channelId = connectData.getChannelId();
+        String channelId = connectData.getClientId();
         try {
             InputStream is = channel.getInputStream();
             OutputStream os = channel.getOutputStream();
             map.put(channelId, MetaData.build(channel, is, os) );
             // 连接后读取,同步阻塞读取
-            readData( new ReadEvent(ReadData.build(channelId, 150L, CmdType.Connect, 0)) );
+            readData( new ReadEvent(ReadData.build(channelId, 100L, CmdType.Connect, 0)) );
         } catch (IOException e) {
             log.error("获取通道流数据失败", e);
         }
@@ -69,7 +69,7 @@ public class ShellListener implements Serializable {
     @EventListener(classes = CmdEvent.class)
     public void writeData(CmdEvent event) {
         WriteData writeData = event.getSource();
-        Integer channelId = writeData.getChannelId();
+        String channelId = writeData.getClientId();
         MetaData metaData = map.get(channelId);
         try {
             CmdType type = writeData.getType();
@@ -81,7 +81,7 @@ public class ShellListener implements Serializable {
             os.flush();
             log.info("内容:[{}], 写入[{}]字节", cmd, bytes.length);
             // 写入后读取,同步阻塞读取
-            readData( new ReadEvent(ReadData.build(channelId, 10L, type, bytes.length)) );
+            readData( new ReadEvent(ReadData.build(channelId, 15L, type, bytes.length)) );
         } catch (IOException e) {
             log.error("写入数据失败", e);
         }
@@ -95,7 +95,7 @@ public class ShellListener implements Serializable {
     @EventListener(classes = ReadEvent.class)
     public void readData(ReadEvent event) {
         ReadData readData = event.getSource();
-        Integer channelId = readData.getChannelId();
+        String channelId = readData.getClientId();
         long sleep = readData.getSleep();
         CmdType type = readData.getType();
         int offset = readData.getOffset();
@@ -103,8 +103,10 @@ public class ShellListener implements Serializable {
         try {
             // 管道输入流
             InputStream is = metaData.getIs();
-            // SSH服务器返回数据需要时间,循环读取
+            // 循环读取
             while ( true ) {
+                // SSH服务器返回数据需要时间,阻塞等待指定间隔时长
+                Thread.sleep(sleep);
                 // 获取所有可读数据
                 int available = is.available();
                 byte[] src = new byte[available];
@@ -120,11 +122,9 @@ public class ShellListener implements Serializable {
                     Map<String, Object> payload = new HashMap<>();
                     payload.put("type", type.name());
                     payload.put("message", message);
-                    template.convertAndSendToUser( channelId.toString(), "/read", payload );
+                    template.convertAndSendToUser( channelId, "/read", payload );
                     break;
                 }
-                // 阻塞等待指定间隔时长
-                Thread.sleep(sleep);
                 log.info("while循环 --> 等待读取数据...");
             }
         } catch (IOException | InterruptedException e) {
